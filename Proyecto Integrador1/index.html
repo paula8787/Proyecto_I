@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudyNest - Alojamiento para estudiantes</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav
+      id="navbarStudyNest"
+      class="navbar navbar-expand-lg navbar-study fixed-top py-3"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">StudyNest</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="html/Alojamiento.html">Alojamientos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Propietarios</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Más
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="html/SobreN.html">Sobre nosotros</a></li>
+                <li><a class="dropdown-item" href="#">Ayuda</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar alojamiento..."
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-light" type="submit">Buscar</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header
+      class="hero d-flex align-items-center justify-content-center text-center text-light"
+    >
+      <div>
+        <h1 class="fw-bold">Encuentra tu alojamiento ideal</h1>
+        <p>Comodidad, seguridad y cercanía para estudiantes universitarios</p>
+        <a href="html/Alojamiento.html" class="btn btn-primary mt-3">Explorar alojamientos</a>
+      </div>
+    </header>
+
+    <script src="js/navbarScroll.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
