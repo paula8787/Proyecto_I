@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyNest - Login</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="../index.html" class="logo">StudyNest</a>
+
+    </nav>
+
+    <div class="wrapper">
+
+        <div class="login-card">
+
+            <h2>Iniciar Sesión</h2>
+
+            <!-- SELECTOR DE ROL -->
+            <div class="switcher">
+                <button id="tab-arrendador" class="sw-btn active">Arrendador</button>
+                <button id="tab-arrendatario" class="sw-btn">Arrendatario</button>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="input-box">
+                    <label>Correo electrónico</label>
+                    <input type="email" required>
+                </div>
+
+                <div class="input-box">
+                    <label>Contraseña</label>
+                    <input type="password" required>
+                </div>
+
+
+                <button class="btn" type="submit">Ingresar</button>
+
+            </form>
+
+            <p class="register-link">
+                ¿No tienes cuenta? <a href="registrarse.html">Regístrate aquí</a>
+            </p>
+
+        </div>
+    </div>
+
+<div id="toast-container"></div>
+
+    <script src="../js/login.js"></script>
+</body>
+
+</html>

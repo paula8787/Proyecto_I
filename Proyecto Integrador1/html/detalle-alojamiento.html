@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Detalle del Alojamiento — StudyNest</title>
+
+    <!-- Bootstrap (estilos) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Leaflet (mapa) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            background: #0b1320;
+            color: #e6eef8;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin-top: 28px;
+        }
+
+        .card-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .gallery-main {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .thumb {
+            width: 110px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: .85;
+            border: 2px solid transparent;
+        }
+
+        .thumb.active {
+            opacity: 1;
+            border-color: #38bdf8;
+        }
+
+        .label-muted {
+            color: #cbd5e1;
+            font-size: .95rem;
+        }
+
+        .badge-verified {
+            background: linear-gradient(90deg, #16a34a, #86efac);
+            color: #002;
+            padding: .35rem .6rem;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        #map {
+            height: 320px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .owner-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .rating-stars {
+            color: #ffd166;
+            font-weight: 700;
+        }
+
+        .repair-list li {
+            margin-bottom: 6px;
+        }
+
+        .small-muted {
+            color: #98a0b3;
+            font-size: .9rem;
+        }
+
+        a.back {
+            color: #cfefff;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #38bdf8;
+            border-color: #38bdf8;
+            color: #002;
+        }
+
+        .img-placeholder {
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 420px;
+            border-radius: 10px;
+            color: #9cc6ea;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div><a class="back" href="Alojamiento.html">← Volver a la lista</a></div>
+            <div class="small-muted">StudyNest — Detalle del Alojamiento</div>
+        </div>
+
+        <div class="card-panel">
+            <div class="row g-3">
+                <!-- Col Izq: galería + descripción breve -->
+                <div class="col-lg-7">
+                    <div id="gallery">
+                        <img id="mainPhoto" class="gallery-main img-fluid" alt="Foto principal" />
+                        <div class="mt-3 d-flex gap-2" id="thumbs"></div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="section-title">Descripción general</div>
+                        <p id="descText" class="label-muted"></p>
+
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <div class="small-muted">Tipo</div>
+                                <div id="tipoText"></div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small-muted">Precio</div>
+                                <div id="precioText" class="fw-bold"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="section-title">Distribución y medidas</div>
+                            <div id="distText" class="label-muted"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col Der: datos técnicos, propietario, reservas -->
+                <div class="col-lg-5">
+                    <div class="owner-card mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="small-muted">Propietario</div>
+                                <div id="ownerName" class="fw-bold"></div>
+                                <div id="ownerContact" class="label-muted"></div>
+                                <div class="mt-2">
+                                    <span id="ownerRating" class="rating-stars"></span>
+                                    <span id="ownerVerifiedBadge" style="margin-left:8px"></span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button id="verifyBtn" class="btn btn-sm btn-outline-light mb-2">Simular
+                                    verificación</button>
+                                <div><button id="contactBtn" class="btn btn-primary btn-sm">Contactar</button></div>
+                            </div>
+                        </div>
+                        <div class="mt-2 small-muted" id="ownerNotes"></div>
+                    </div>
+
+                    <div class="card-panel mb-3">
+                        <div class="section-title">Acabados y mobiliario</div>
+                        <ul id="acabadosList" class="label-muted"></ul>
+                    </div>
+
+                    <div class="card-panel mb-3">
+                        <div class="section-title">Estado y reparaciones</div>
+                        <div id="estadoText" class="label-muted"></div>
+                        <ul id="repairs" class="repair-list small-muted mt-2"></ul>
+                    </div>
+
+                    <div class="card-panel">
+                        <div class="section-title">Servicios y conexiones</div>
+                        <ul id="serviciosList" class="label-muted"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa + calendario/otros -->
+            <div class="row mt-4 g-3">
+                <div class="col-lg-8">
+                    <div class="section-title">Ubicación</div>
+                    <div id="map"></div>
+                    <div class="small-muted mt-2" id="addressText"></div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="section-title">Galería adicional / detalles</div>
+                    <div id="extraGallery" class="d-flex flex-wrap gap-2"></div>
+
+                    <div class="mt-3">
+                        <div class="section-title">Reseñas de inquilinos</div>
+                        <div id="reviewsContainer" class="small-muted"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet y Bootstrap JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /*****************************************************************
+         *   detalle-alojamiento.html (Standalone)                         *
+         *  - Usa localStorage 'habitacionSeleccionada' si existe          *
+         *  - Si no, usa 'a1' por defecto                                  *
+         *  - Datos y fotos ficticios (para pruebas / fines educativos)    *
+         *****************************************************************/
+
+        // Datos de ejemplo (ficticios) — puedes reemplazar con los tuyos
+        const ALOJAMIENTOS = [
+            {
+                id: "a1",
+                nombre: "Habitación Semidoble • UFPSO (Interiores)",
+                desc: "Espacio luminoso y silencioso, ideal para estudio. Buen flujo de aire y mobiliario completo.",
+                precio: 350000,
+                tipo: "Habitación",
+                metros: "10.5 m²",
+                distribucion: "Rectángulo 3.5 m × 3.0 m — ventana al norte, puerta hacia pasillo.",
+                lat: 8.2377, lon: -73.3560,
+                fotos: [
+                    "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg",
+                    "https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg",
+                    "https://images.pexels.com/photos/678247/pexels-photo-678247.jpeg",
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80",
+                    "https://images.unsplash.com/photo-1586105251261-72a756497a3b?w=1600&q=80"
+                ],
+                muebles: {
+                    cama: "Cama semidoble (135×190 cm) — estructura madera tratada, colchón ortopédico (2 años)",
+                    escritorio: "Escritorio 110×60 cm con superficie laminada",
+                    silla: "Silla ergonómica ajustable",
+                    armario: "Armario empotrado 3 cuerpos con puertas corredizas",
+                    mesa_noche: "Mesa de noche con cajón"
+                },
+                acabados: {
+                    paredes: "Pintura lavable mate color blanco roto",
+                    suelo: "Laminado AC4 color roble claro",
+                    techo: "Yeso pintado, sin manchas",
+                    ventanas: "Aluminio con doble vidrio parcial y mosquitera"
+                },
+                estado: {
+                    observaciones: "Pequeña fisura estética en esquina izquierda (no estructural). Enchufe junto al escritorio con holgura leve.",
+                    necesitaReparacion: ["Revisar enchufe en pared este", "Ajustar bisagra armario (puerta 2)"]
+                },
+                servicios: ["Wifi básico (10 Mbps)", "Agua incluida", "Electricidad compartida", "Cocina común", "Basura en sótano"],
+                ownerId: "owner_01",
+                address: "Calle 12 #34-56, Barrio El Algodonal, Ocaña"
+            },
+
+            // otro ejemplo
+            {
+                id: "a2",
+                nombre: "Apartaestudio Moderno • Centro",
+                desc: "Estudio equipado, baño privado, cocina integral, ideal para quien busca privacidad.",
+                precio: 520000,
+                tipo: "Apartaestudio",
+                metros: "22 m²",
+                distribucion: "Estudio rectangular con cocina integrada, baño privado.",
+                lat: 8.2355, lon: -73.3534,
+                fotos: [
+                    "https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg",
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1505691723518-34d56e1e1a5a?w=1200&q=80"
+                ],
+                muebles: {
+                    cama: "Cama doble con canapé",
+                    escritorio: "Mesa plegable",
+                    silla: "Silla de oficina",
+                    armario: "Closet independiente"
+                },
+                acabados: {
+                    paredes: "Pintura satinada color beige claro",
+                    suelo: "Porcelanato pulido",
+                    techo: "Lámina decorativa limpia"
+                },
+                estado: {
+                    observaciones: "Sin daños visibles. Sellado de bañera en buen estado.",
+                    necesitaReparacion: []
+                },
+                servicios: ["Wifi 50 Mbps (opcional)", "Agua y energía incluidos en el precio (hasta consumo razonable)"],
+                ownerId: "owner_02",
+                address: "Calle 5 #10-22, Centro"
+            }
+        ];
+
+        // Owners (datos ficticios para pruebas)
+        const OWNERS = {
+            owner_01: {
+                name: "Carlos Andrés García Muñoz",
+                phone: "+57 320 555 1287",
+                email: "carlos.garcia@example.com",
+                verified: false, // se puede "simular verificar" con el botón
+                rating: 4.8
+            },
+            owner_02: {
+                name: "María Fernanda Ruiz",
+                phone: "+57 315 444 9911",
+                email: "m.fernanda@example.com",
+                verified: true,
+                rating: 4.6
+            }
+        };
+
+        // Reviews (ficticias)
+        const REVIEWS = [
+            { ownerId: "owner_01", user: "Ana M.", stars: 5, text: "Excelente trato, puntual y claro.", date: "2025-06-18" },
+            { ownerId: "owner_01", user: "Julio R.", stars: 4.5, text: "El apartamento tal cual lo describen.", date: "2025-08-02" },
+            { ownerId: "owner_02", user: "Carolina", stars: 5, text: "Recomendada 100%, muy honesta.", date: "2025-07-11" }
+        ];
+
+        // Obtener id seleccionado (desde localStorage o fallback)
+        let selectedId = localStorage.getItem("habitacionSeleccionada") || "a1";
+        // Si por alguna razón guardaste números (1,2...), intenta normalizar:
+        if (!selectedId.startsWith && typeof selectedId === "number") selectedId = String(selectedId);
+
+        // Encontrar alojamiento
+        const alojamiento = ALOJAMIENTOS.find(a => a.id === selectedId) || ALOJAMIENTOS[0];
+        const owner = OWNERS[alojamiento.ownerId];
+
+        // DOM elements
+        const mainPhoto = document.getElementById("mainPhoto");
+        const thumbs = document.getElementById("thumbs");
+        const extraGallery = document.getElementById("extraGallery");
+        const descText = document.getElementById("descText");
+        const precioText = document.getElementById("precioText");
+        const tipoText = document.getElementById("tipoText");
+        const distText = document.getElementById("distText");
+        const ownerName = document.getElementById("ownerName");
+        const ownerContact = document.getElementById("ownerContact");
+        const ownerRating = document.getElementById("ownerRating");
+        const ownerVerifiedBadge = document.getElementById("ownerVerifiedBadge");
+        const ownerNotes = document.getElementById("ownerNotes");
+        const acabadosList = document.getElementById("acabadosList");
+        const estadoText = document.getElementById("estadoText");
+        const repairs = document.getElementById("repairs");
+        const serviciosList = document.getElementById("serviciosList");
+        const addressText = document.getElementById("addressText");
+        const reviewsContainer = document.getElementById("reviewsContainer");
+        const verifyBtn = document.getElementById("verifyBtn");
+        const contactBtn = document.getElementById("contactBtn");
+
+        // Rellenar galería principal y thumbnails
+        function renderGallery() {
+            const fotos = alojamiento.fotos || [];
+            if (fotos.length === 0) {
+                mainPhoto.style.display = "none";
+                const ph = document.createElement("div");
+                ph.className = "img-placeholder";
+                ph.textContent = "Sin imágenes disponibles";
+                document.getElementById("gallery").appendChild(ph);
+                return;
+            }
+
+            mainPhoto.src = fotos[0];
+            thumbs.innerHTML = "";
+            fotos.forEach((u, idx) => {
+                const img = document.createElement("img");
+                img.src = u + (u.indexOf('?') === -1 ? "?w=800&q=80" : "");
+                img.className = "thumb" + (idx === 0 ? " active" : "");
+                img.title = "Ver imagen " + (idx + 1);
+                img.addEventListener("click", () => {
+                    mainPhoto.src = u;
+                    document.querySelectorAll("#thumbs .thumb").forEach(t => t.classList.remove("active"));
+                    img.classList.add("active");
+                });
+                thumbs.appendChild(img);
+            });
+
+            // extra gallery (smaller)
+            extraGallery.innerHTML = "";
+            fotos.slice(0, 8).forEach(u => {
+                const el = document.createElement("img");
+                el.src = u + (u.indexOf('?') === -1 ? "?w=400&q=80" : "");
+                el.style.width = "120px";
+                el.style.height = "80px";
+                el.style.objectFit = "cover";
+                el.style.borderRadius = "8px";
+                extraGallery.appendChild(el);
+            });
+        }
+
+        // Rellenar campos descriptivos
+        function renderDetails() {
+            document.title = alojamiento.nombre + " — StudyNest";
+            descText.textContent = alojamiento.desc || "-";
+            precioText.textContent = "$" + (alojamiento.precio || "-").toLocaleString();
+            tipoText.textContent = alojamiento.tipo || "-";
+            distText.textContent = `${alojamiento.metros || ""} · ${alojamiento.distribucion || ""}`;
+            addressText.textContent = alojamiento.address || "";
+
+            // Mobiliario y acabados
+            acabadosList.innerHTML = "";
+            const m = alojamiento.muebles || {};
+            const a = alojamiento.acabados || {};
+            const modos = [
+                `Mobiliario: ${m.cama || '-'}, ${m.escritorio || ''}, ${m.silla || ''}, ${m.armario || ''}`,
+                `Paredes: ${a.paredes || '-'}`,
+                `Suelo: ${a.suelo || '-'}`,
+                `Techo: ${a.techo || '-'}`,
+                `Ventanas: ${a.ventanas || '-'}`,
+            ];
+            modos.forEach(t => {
+                const li = document.createElement("li");
+                li.textContent = t;
+                acabadosList.appendChild(li);
+            });
+
+            // Estado y reparaciones
+            estadoText.textContent = alojamiento.estado?.observaciones || "Sin observaciones reseñables.";
+            repairs.innerHTML = "";
+            (alojamiento.estado?.necesitaReparacion || []).forEach(r => {
+                const li = document.createElement("li");
+                li.textContent = r;
+                repairs.appendChild(li);
+            });
+
+            // Servicios
+            serviciosList.innerHTML = "";
+            (alojamiento.servicios || []).forEach(s => {
+                const li = document.createElement("li");
+                li.textContent = s;
+                serviciosList.appendChild(li);
+            });
+        }
+
+        // Owner box
+        function renderOwner() {
+            ownerName.textContent = owner.name;
+            ownerContact.innerHTML = `📞 <span class="small-muted">${owner.phone}</span><br/>✉️ <span class="small-muted">${owner.email}</span>`;
+            ownerNotes.textContent = "Valoración promedio basada en reseñas: " + (owner.rating || "—");
+
+            ownerRating.textContent = `★ ${owner.rating || "—"}`;
+
+            if (owner.verified) {
+                ownerVerifiedBadge.innerHTML = `<span class="badge-verified">VERIFICADO</span>`;
+                verifyBtn.textContent = "Verificado";
+                verifyBtn.classList.remove("btn-outline-light");
+                verifyBtn.classList.add("btn-success");
+            } else {
+                ownerVerifiedBadge.innerHTML = `<span class="small-muted">No verificado</span>`;
+                verifyBtn.textContent = "Simular verificación";
+                verifyBtn.classList.remove("btn-success");
+                verifyBtn.classList.add("btn-outline-light");
+            }
+        }
+
+        // Reviews
+        function renderReviews() {
+            const revs = REVIEWS.filter(r => r.ownerId === alojamiento.ownerId);
+            if (revs.length === 0) {
+                reviewsContainer.innerHTML = "<div class='small-muted'>Sin reseñas aún.</div>";
+                return;
+            }
+            reviewsContainer.innerHTML = revs.map(r => `
+        <div style="margin-bottom:8px">
+          <div style="font-weight:700">${r.user} <span class="small-muted">· ${r.date}</span></div>
+          <div class="label-muted">★ ${r.stars} — ${r.text}</div>
+        </div>
+      `).join("");
+        }
+
+        // Mapa (Leaflet)
+        function initMap() {
+            try {
+                const map = L.map('map', { scrollWheelZoom: false }).setView([alojamiento.lat, alojamiento.lon], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+                L.marker([alojamiento.lat, alojamiento.lon]).addTo(map).bindPopup(`<b>${alojamiento.nombre}</b><div>${alojamiento.address || ''}</div>`);
+            } catch (e) {
+                console.warn("Leaflet no disponible", e);
+            }
+        }
+
+        // Contact button (abre modal o enlace; aquí simulamos crear un correo)
+        contactBtn.addEventListener("click", () => {
+            // abre mailto con mensaje prellenado (simulación)
+            const subj = encodeURIComponent(`Interés en: ${alojamiento.nombre}`);
+            const body = encodeURIComponent(`Hola ${owner.name},%0A%0AEstoy interesado en la habitación "${alojamiento.nombre}". ¿Podemos coordinar visita?%0A%0AGracias.`);
+            window.location.href = `mailto:${owner.email}?subject=${subj}&body=${body}`;
+        });
+
+        // Simular verificación: actualiza objeto local (solo pruebas)
+        verifyBtn.addEventListener("click", () => {
+            owner.verified = !owner.verified;
+            // opcional: guardar simulación en localStorage para mantener estado
+            const saved = JSON.parse(localStorage.getItem("simulatedOwners") || "{}");
+            saved[alojamiento.ownerId] = owner;
+            localStorage.setItem("simulatedOwners", JSON.stringify(saved));
+            renderOwner();
+            toast(`Estado de verificación actualizado (simulado): ${owner.verified ? 'VERIFICADO' : 'NO verificado'}`);
+        });
+
+        // Simple toast (temporal)
+        function toast(msg) {
+            const t = document.createElement("div");
+            t.className = "toast position-fixed end-0 top-0 m-4";
+            t.style.zIndex = 99999;
+            t.innerHTML = `<div class="toast-body" style="background:#06232b;color:#cfeffb;border-radius:8px">${msg}</div>`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3200);
+        }
+
+        // Inicializar: cargar datos guardados por "simulación de verificación" si existen
+        (function init() {
+            // si se guardaron owners simulados en localStorage, mezclarlos
+            const savedOwners = JSON.parse(localStorage.getItem("simulatedOwners") || "{}");
+            Object.keys(savedOwners).forEach(k => { if (OWNERS[k]) OWNERS[k] = savedOwners[k]; });
+
+            renderGallery();
+            renderDetails();
+            renderOwner();
+            renderReviews();
+            initMap();
+        })();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,218 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+a, a:hover, a:focus {
+    text-decoration: none !important;
+}
+
+/* ===== PALETA OSCURA ELEGANTE ===== */
+:root {
+    --bg1: #0B0F19;
+    --bg2: #1A2333;
+    --white: #FFFFFF;
+    --gray: #B8C2D1;
+    --accent: #5BC0BE; 
+    --accent-light: #9FF1EF;
+}
+
+/* Fondo elegante */
+body {
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Barra arriba */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 18px 40px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.logo {
+    color: var(--white);
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* Contenedor */
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+/* Tarjeta Glass */
+.register-card {
+    width: 420px;
+    padding: 35px;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.15);
+    animation: fadeIn .7s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Switch Arriba */
+.switcher {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.sw-btn {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: var(--gray);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: .3s;
+}
+
+.sw-btn.active {
+    background: var(--accent);
+    color: var(--white);
+}
+
+/* Formularios */
+.form {
+    display: none;
+}
+
+.form.active {
+    display: block;
+}
+
+h2 {
+    color: var(--white);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Inputs estilo login */
+.input-box {
+    position: relative;
+    margin: 18px 0;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid var(--gray);
+    outline: none;
+    color: var(--white);
+    font-size: 16px;
+}
+
+.input-box input:focus {
+    border-bottom: 2px solid var(--accent);
+}
+
+/* Label animado */
+.input-box input:focus + label,
+.input-box input:valid + label,
+.input-box input:not(:placeholder-shown) + label {
+    top: -6px;
+    font-size: 12px;
+    color: var(--accent-light);
+}
+
+.input-box label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    pointer-events: none;
+    transition: .3s;
+}
+
+/* Botón */
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: var(--accent);
+    color: var(--white);
+    font-size: 16px;
+    border-radius: 12px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.btn:hover {
+    background: var(--accent-light);
+}
+
+/* ==== TOAST NOTIFICATIONS ==== */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+}
+
+.toast {
+    min-width: 240px;
+    max-width: 300px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: var(--white);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.4s ease, fadeOut 0.5s ease forwards;
+    animation-delay: 0s, 4s;
+}
+
+.toast.success {
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(91, 192, 190, .4);
+}
+
+.toast.error {
+    background: #e74c3c;
+    box-shadow: 0 0 10px rgba(231, 76, 60, .4);
+}
+
+.toast.warning {
+    background: #f1c40f;
+    color: #000;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateX(40px); }
+}

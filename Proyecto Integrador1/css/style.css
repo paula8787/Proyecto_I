@@ -1,9 +1,17 @@
 :root {
-  --primary-color: #0d6efd;
-  --navbar-bg: rgba(0, 0, 0, 0.6);
-  --navbar-bg-scrolled: rgba(0, 0, 0, 0.9);
-  --text-light: #fff;
+    --bg1: #0f172a;
+    --bg2: #1e293b;
+
+    --text-light: #ffffff;
+    --text-gray: #cbd5e1;
+
+    --primary: #38bdf8;          /* Azul moderno */
+    --primary-light: #5CD8FF;    /* Variación */
+
+    --glass: rgba(255, 255, 255, 0.08);
+    --glass-strong: rgba(255, 255, 255, 0.12);
 }
+
 
 body {
   margin: 0;
@@ -30,6 +38,12 @@ body {
   background: var(--navbar-bg-scrolled) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
+
+
+.navbar-study .container-fluid {
+    padding-right: 0 !important;
+}
+
 
 /* Espaciador para el hero */
 body::before {
@@ -141,4 +155,52 @@ body::before {
   .hero h1 {
     font-size: 1.9rem;
   }
+}
+/* ==== TOAST NOTIFICATIONS ==== */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+}
+
+.toast {
+    min-width: 240px;
+    max-width: 300px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: var(--white);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.4s ease, fadeOut 0.5s ease forwards;
+    animation-delay: 0s, 4s;
+}
+
+.toast.success {
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(91, 192, 190, .4);
+}
+
+.toast.error {
+    background: #e74c3c;
+    box-shadow: 0 0 10px rgba(231, 76, 60, .4);
+}
+
+.toast.warning {
+    background: #f1c40f;
+    color: #000;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateX(40px); }
 }

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat con el propietario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* ====== PALETA PROFESIONAL ====== */
+        :root {
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --text-main: #1f2d3d;
+            --text-soft: #4a5568;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --border: #e5e7eb;
+            --shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Botón volver */
+        .back-btn {
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 10px;
+            color: #1e293b;
+            font-weight: 500;
+            transition: .2s;
+        }
+        .back-btn:hover {
+            background: #cbd5e1;
+        }
+
+        /* ===== CARD PRINCIPAL ===== */
+        .header-info {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        .room-img {
+            width: 100%;
+            border-radius: 16px;
+            height: 230px;
+            object-fit: cover;
+            margin-top: 15px;
+        }
+
+        /* ===== CHAT ===== */
+        .chat-box {
+            height: 420px;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            scroll-behavior: smooth;
+        }
+
+        .msg {
+            padding: 12px 18px;
+            margin: 12px 0;
+            border-radius: 16px;
+            max-width: 70%;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.4;
+            animation: fadeIn 0.15s ease-in;
+        }
+
+        .mine {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+            box-shadow: 0 3px 8px rgba(59,130,246,0.25);
+        }
+
+        .other {
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid #e2e8f0;
+            margin-right: auto;
+        }
+
+        /* Input */
+        #msgInput {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 12px 16px;
+            border-radius: 14px;
+        }
+
+        #msgInput:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 6px rgba(59,130,246,0.35);
+            outline: none;
+        }
+
+        /* Botón enviar */
+        #sendBtn {
+            background: var(--primary);
+            border:none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        #sendBtn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Animación */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <button class="back-btn" onclick="history.back()">← Regresar</button>
+
+    <div class="header-info">
+        <h3 id="roomName">Habitación</h3>
+        <p id="roomDesc"></p>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <strong>Precio:</strong>
+                <span id="roomPrice"></span>
+            </div>
+            <div class="col-md-6">
+                <strong>Dueño:</strong> <span id="ownerName"></span><br>
+                <strong>Tel:</strong> <span id="ownerPhone"></span><br>
+                <strong>Email:</strong> <span id="ownerEmail"></span>
+            </div>
+        </div>
+
+        <img id="roomImg" class="room-img">
+    </div>
+
+    <h4 class="mt-3 mb-3">Chat con el propietario</h4>
+
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="d-flex mt-3">
+        <input id="msgInput" class="form-control me-2" placeholder="Escribe un mensaje…">
+        <button class="btn" id="sendBtn">Enviar</button>
+    </div>
+
+</div>
+
+<script>
+/* === Cargar datos de la habitación === */
+function getAlojamientos() {
+    return JSON.parse(localStorage.getItem('alojamientos') || '[]');
+}
+
+/* Datos falsos de propietarios */
+const propietarios = {
+    a1: { nombre: "Carlos Jiménez", telefono: "3110002233", email: "carlos@ufpso.edu.co" },
+    a2: { nombre: "Andrea Gutiérrez", telefono: "3168821901", email: "andrea@ufpso.edu.co" },
+    a3: { nombre: "María López", telefono: "3205518991", email: "maria@ufpso.edu.co" },
+};
+
+// ID en URL
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+const alojamiento = getAlojamientos().find(a => a.id === id);
+
+/* RENDER INFO */
+if (alojamiento) {
+    roomName.textContent = alojamiento.nombre;
+    roomDesc.textContent = alojamiento.desc;
+    roomPrice.textContent = "$" + alojamiento.precio.toLocaleString("es-CO") + "/mes";
+    roomImg.src = alojamiento.fotos[0];
+
+    const dueño = propietarios[id];
+    if (dueño) {
+        ownerName.textContent = dueño.nombre;
+        ownerPhone.textContent = dueño.telefono;
+        ownerEmail.textContent = dueño.email;
+    }
+}
+
+/* === CHAT === */
+const chatBox = document.getElementById("chatBox");
+const sendBtn = document.getElementById("sendBtn");
+const msgInput = document.getElementById("msgInput");
+
+function loadChat() {
+    const msgs = JSON.parse(localStorage.getItem("chat_" + id) || "[]");
+    chatBox.innerHTML = "";
+
+    msgs.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "msg " + (m.mine ? "mine" : "other");
+        div.textContent = m.text;
+        chatBox.appendChild(div);
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+sendBtn.addEventListener("click", () => {
+    const txt = msgInput.value.trim();
+    if (!txt) return;
+
+    const msgs = JSON.parse(localStorage.getItem("chat_" + id) || "[]");
+
+    msgs.push({ text: txt, mine: true });
+
+    // Respuesta automática de prueba
+    setTimeout(() => {
+        msgs.push({ text: "Perfecto, estoy atento a cualquier duda.", mine: false });
+        localStorage.setItem("chat_" + id, JSON.stringify(msgs));
+        loadChat();
+    }, 900);
+
+    localStorage.setItem("chat_" + id, JSON.stringify(msgs));
+    msgInput.value = "";
+    loadChat();
+});
+
+loadChat();
+</script>
+
+</body>
+</html>
