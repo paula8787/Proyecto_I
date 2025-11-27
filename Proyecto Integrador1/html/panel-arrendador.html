@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Panel del Arrendador</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+<style>
+/* ======================= VARIABLES ======================= */
+:root {
+    --bg1: #0f172a;
+    --bg2: #1e293b;
+    --card: rgba(255,255,255,0.06);
+    --glass: rgba(255,255,255,0.1);
+    --border: rgba(255,255,255,0.07);
+    --text: #e2e8f0;
+    --accent: #38bdf8;
+    --accent-hover: #5ed8ff;
+}
+
+/* ======================= GLOBAL ======================= */
+body {
+    margin: 0;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    color: var(--text);
+    font-family: Poppins, sans-serif;
+}
+
+/* ======================= NAVBAR ======================= */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 38px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+nav .links a {
+    margin-right: 18px;
+    color: var(--text);
+    text-decoration: none;
+    opacity: 0.85;
+}
+
+nav .links a:hover {
+    color: var(--accent);
+}
+
+/* ===== ÍCONO PERFIL ===== */
+.profile-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* ICONO DE USUARIO */
+.profile-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #002;
+    font-weight: 700;
+}
+
+/* ======= NOTIFICACIONES (CAMPANA) ======= */
+.bell {
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.bell:hover {
+    color: var(--accent);
+}
+
+.bell-dot {
+    width: 10px;
+    height: 10px;
+    background: #ff4d4d;
+    border-radius: 50%;
+    position: absolute;
+    top: -2px;
+    right: -2px;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: var(--glass);
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    width: 200px;
+    backdrop-filter: blur(8px);
+    display: none;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+/* Dropdown notificaciones */
+.notif-box {
+    position: absolute;
+    top: 45px;
+    right: 45px;
+    width: 260px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    backdrop-filter: blur(8px);
+    display: none;
+}
+
+.notif-item {
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+/* ======================= CONTENEDOR PRINCIPAL ======================= */
+.main-wrapper {
+    width: 75%;
+    margin: 30px auto;
+}
+
+/* ======================= TARJETA ======================= */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 22px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+}
+
+/* ======================= INPUTS ======================= */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--glass);
+    color: var(--text);
+    font-size: 15px;
+}
+
+/* ======================= MAPA ======================= */
+#map {
+    height: 350px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+/* ======================= CARDS HABITACIONES ======================= */
+.h-card {
+    display: flex;
+    gap: 18px;
+    background: var(--card);
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    margin-bottom: 18px;
+    transition: 0.2s;
+}
+
+.h-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+}
+
+.h-card img {
+    width: 150px;
+    height: 110px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ======================= NAVBAR ======================= -->
+<nav>
+    <div class="links">
+        <a href="../index.html">Inicio</a>
+        <a href="SobreN.html">Sobre Nosotros</a>
+    </div>
+
+    <div class="profile-container">
+        <!-- NOTIFICACIONES -->
+        <div class="bell" id="bellBtn">🔔
+            <span class="bell-dot" id="notifDot"></span>
+        </div>
+
+        <div class="notif-box" id="notifBox"></div>
+
+        <!-- ÍCONO DE PERFIL -->
+        <div class="profile-icon" id="profileBtn">A</div>
+
+        <!-- MENU PERFIL -->
+        <div class="dropdown-menu" id="profileMenu">
+            <a href="#">Mi perfil</a>
+            <a href="#">Configuración</a>
+            <a href="../index.html">Cerrar sesión</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ======================= CONTENEDOR ======================= -->
+<div class="main-wrapper">
+
+    <!-- ============ FORMULARIO CREAR HABITACIÓN ============ -->
+    <section class="card">
+        <h2>Crear Habitación</h2>
+
+        <input id="nombre" placeholder="Nombre de la habitación">
+        <textarea id="desc" rows="3" placeholder="Describe tu habitación..."></textarea>
+        <input id="precio" type="number" placeholder="Precio mensual">
+
+        <select id="tipo">
+            <option value="">Seleccionar tipo</option>
+            <option value="Habitación">Habitación</option>
+            <option value="Apartaestudio">Apartaestudio</option>
+        </select>
+
+        <select id="soloMujeres">
+            <option value="false">Mixto</option>
+            <option value="true">Solo mujeres</option>
+        </select>
+
+        <input id="servicios" placeholder="wifi, agua, energía, cocina...">
+        <input id="foto" placeholder="URL de la foto">
+
+        <label>Selecciona ubicación en el mapa:</label>
+        <div id="map"></div>
+
+        <button id="crearBtn">Agregar Habitación</button>
+    </section>
+
+    <!-- ============ LISTA DE HABITACIONES ============ -->
+    <section class="card">
+        <h2>Mis Habitaciones</h2>
+
+        <div id="lista"></div>
+    </section>
+
+</div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+/* ======================= NOTIFICACIONES ======================= */
+let notificaciones = [
+    "Juan P. alquiló tu habitación",
+    "María F. quiere comunicarse contigo",
+    "Nuevo mensaje recibido"
+];
+
+function renderNotificaciones() {
+    const box = document.getElementById("notifBox");
+
+    if (notificaciones.length === 0) {
+        box.innerHTML = "<p class='notif-item'>Sin notificaciones</p>";
+        return;
+    }
+
+    box.innerHTML = notificaciones
+        .map(n => `<div class="notif-item">${n}</div>`)
+        .join("");
+}
+
+document.getElementById("bellBtn").addEventListener("click", () => {
+    const menu = document.getElementById("notifBox");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+    document.getElementById("notifDot").style.display = "none";
+});
+
+/* ======================= PERFIL DESPLEGABLE ======================= */
+document.getElementById("profileBtn").addEventListener("click", () => {
+    const menu = document.getElementById("profileMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+});
+
+/* ======================= MAPA ======================= */
+let map = L.map("map").setView([8.2377, -73.3560], 14);
+let marker = null;
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+map.on("click", e => {
+    if (marker) map.removeLayer(marker);
+    marker = L.marker(e.latlng).addTo(map);
+    marker.coords = e.latlng;
+});
+
+/* ======================= HABITACIONES ======================= */
+let habitaciones = JSON.parse(localStorage.getItem("habitaciones") || "[]");
+
+/* ===== PREDEFINIDAS SI NO HAY ===== */
+if (habitaciones.length === 0) {
+    habitaciones = [
+        {
+            id: "d1",
+            nombre: "Loft moderno cerca de UFPSO",
+            desc: "Espacio elegante con baño privado y wifi.",
+            precio: 520000,
+            tipo: "Apartaestudio",
+            soloMujeres: false,
+            servicios: ["wifi","agua","energía"],
+            foto: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg",
+            lat: 8.236,
+            lon: -73.355
+        },
+        {
+            id: "d2",
+            nombre: "Habitación económica",
+            desc: "Ideal para estudiantes, ambiente tranquilo.",
+            precio: 280000,
+            tipo: "Habitación",
+            soloMujeres: true,
+            servicios: ["agua"],
+            foto: "https://images.pexels.com/photos/678247/pexels-photo-678247.jpeg",
+            lat: 8.239,
+            lon: -73.358
+        }
+    ];
+}
+
+/* ======================= CREAR HABITACIÓN ======================= */
+document.getElementById("crearBtn").addEventListener("click", () => {
+    const nombre = document.getElementById("nombre").value.trim();
+    const desc = document.getElementById("desc").value.trim();
+    const precio = Number(document.getElementById("precio").value);
+    const tipo = document.getElementById("tipo").value;
+    const mujeres = document.getElementById("soloMujeres").value === "true";
+    const servicios = document.getElementById("servicios").value.split(",").map(s => s.trim());
+    const foto = document.getElementById("foto").value.trim();
+
+    if (!marker || !nombre || !desc || !precio || !tipo || !foto) {
+        alert("Completa todos los campos.");
+        return;
+    }
+
+    habitaciones.push({
+        id: "h_" + Date.now(),
+        nombre,
+        desc,
+        precio,
+        tipo,
+        soloMujeres: mujeres,
+        servicios,
+        foto,
+        lat: marker.coords.lat,
+        lon: marker.coords.lng
+    });
+
+    localStorage.setItem("habitaciones", JSON.stringify(habitaciones));
+    renderCards();
+});
+
+/* ======================= RENDER CARDS ======================= */
+function renderCards() {
+    let html = "";
+
+    habitaciones.forEach(h => {
+        html += `
+        <div class="h-card">
+            <img src="${h.foto}">
+            <div class="h-info">
+                <h3>${h.nombre}</h3>
+                <p>${h.desc}</p>
+                <p class="price">$${h.precio.toLocaleString()}</p>
+                <p><strong>Servicios:</strong> ${h.servicios.join(", ")}</p>
+            </div>
+        </div>`;
+    });
+
+    document.getElementById("lista").innerHTML = html;
+}
+
+renderCards();
+renderNotificaciones();
+</script>
+
+</body>
+</html>

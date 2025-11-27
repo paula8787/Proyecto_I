@@ -1,0 +1,96 @@
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #38bdf8;
+    --text: #e2e8f0;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    font-family: Poppins, sans-serif;
+    color: var(--text);
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(8px);
+}
+
+.logo {
+    color: var(--accent);
+}
+
+.nav-links a {
+    margin-left: 18px;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* CARDS */
+.form-card, .list-card {
+    background: var(--card);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+}
+
+input, textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+}
+
+.btn {
+    background: var(--accent);
+    color: #001;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#map {
+    height: 360px;
+    margin-top: 15px;
+    border-radius: 10px;
+}
+
+.room-item {
+    background: rgba(255,255,255,0.08);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+}

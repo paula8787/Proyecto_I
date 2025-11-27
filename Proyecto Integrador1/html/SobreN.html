@@ -4,92 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre Nosotros - StudyNest</title>
-    <link rel="stylesheet" href="../css/SobreN.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg1:#0f172a;
+            --bg2:#1e293b;
+            --card:#1e2535;
+            --text:#e2e8f0;
+            --light:#94a3b8;
+            --accent:#38bdf8;
+        }
+
+        body {
+            margin:0;
+            font-family:'Poppins', sans-serif;
+            background:linear-gradient(135deg, var(--bg1), var(--bg2));
+            color:var(--text);
+        }
+
+        /* NAV */
+        nav {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:18px 40px;
+            background:rgba(255,255,255,0.04);
+            backdrop-filter:blur(10px);
+            position:sticky;
+            top:0;
+            z-index:100;
+            border-bottom:1px solid rgba(255,255,255,0.04);
+        }
+
+        nav .brand {
+            font-size:22px;
+            font-weight:700;
+            color:var(--accent);
+        }
+
+        nav .links a {
+            margin-left:25px;
+            text-decoration:none;
+            font-size:15px;
+            color:var(--light);
+            font-weight:500;
+            transition:.2s;
+        }
+
+        nav .links a:hover {
+            color:var(--accent);
+        }
+        /* 🔙 BOTÓN VOLVER */
+        .back-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.04);
+            color: var(--light);
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition:.25s ease;
+            padding-left: 25px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(255,255,255,0.04);
+        }
+
+
+        /* HERO */
+        .hero {
+            padding:100px 40px 60px;
+            text-align:center;
+        }
+
+        .hero h1 {
+            font-size:45px;
+            font-weight:700;
+            margin-bottom:18px;
+        }
+
+        .hero p {
+            max-width:780px;
+            margin:auto;
+            font-size:18px;
+            line-height:1.6;
+            color:var(--light);
+        }
+
+        /* SECTION */
+        section {
+            padding:40px 50px 80px;
+            max-width:1100px;
+            margin:auto;
+        }
+
+        .card {
+            background:rgba(255,255,255,0.05);
+            padding:30px;
+            border-radius:16px;
+            backdrop-filter:blur(4px);
+            margin-bottom:40px;
+            border:1px solid rgba(255,255,255,0.05);
+            transition:.25s;
+        }
+
+        .card:hover {
+            transform:translateY(-5px);
+        }
+
+        h2 {
+            font-size:26px;
+            margin-bottom:14px;
+        }
+
+        /* TEAM */
+        .team {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+            gap:25px;
+        }
+
+        .person {
+            background:rgba(255,255,255,0.04);
+            padding:24px;
+            border-radius:14px;
+            text-align:center;
+            transition:.25s;
+        }
+
+        .person:hover {
+            transform:translateY(-6px);
+            background:rgba(255,255,255,0.06);
+        }
+
+        .person img {
+            width:120px;
+            height:120px;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid var(--accent);
+            margin-bottom:14px;
+        }
+
+        footer {
+            text-align:center;
+            padding:22px;
+            color:var(--light);
+            font-size:14px;
+            opacity:.7;
+            border-top:1px solid rgba(255,255,255,0.05);
+            margin-top:40px;
+        }
+    </style>
 </head>
 
 <body>
 
     <!-- NAV -->
-    <nav class="nav">
-        <div class="left">
-            <h2 class="logo">StudyNest</h2>
+    <nav>
+        <div class="brand">StudyNest</div>
 
-            <div class="links">
-                <a href="../index.html">Inicio</a>
-                <a href="Alojamiento.html">Alojamientos</a>
-                <a href="#">Subsidios</a>
-                <a class="active" href="#">Sobre Nosotros</a>
-            </div>
-        </div>
-
-        <div class="center">
-            <div class="search-box">
-                <input type="text" placeholder="Buscar...">
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png" class="search-icon">
-            </div>
-        </div>
-
-        <div class="right">
-            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827344.png" class="notif-icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="profile-icon">
+        <div class="links">
+            <a href="../index.html">Inicio</a>
+        <!-- 🔙 BOTÓN PARA RETROCEDER -->
+        <button class="back-btn" onclick="history.back()">Volver</button>
         </div>
     </nav>
 
     <!-- HERO -->
-    <header class="hero">
-        <div class="overlay"></div>
-        <div class="content">
-            <h1>Sobre Nosotros</h1>
-            <p>
-                Conectamos estudiantes con alojamientos, subsidios y recursos esenciales para su vida universitaria.
-            </p>
-        </div>
-    </header>
+    <div class="hero">
+        <h1>Conectamos estudiantes con alojamientos seguros</h1>
+        <p>
+            StudyNest nació para resolver una necesidad real: estudiantes foráneos necesitan encontrar
+            alojamientos confiables, cómodos y cercanos a sus universidades. Nosotros lo hacemos posible.
+        </p>
+    </div>
 
-    <!-- INTRODUCCIÓN -->
-    <section class="intro">
-        <div class="text">
-            <h2>¿Quiénes Somos?</h2>
+    <!-- CONTENT -->
+    <section>
+        <div class="card">
+            <h2>✨ Nuestra misión</h2>
             <p>
-                StudyNest es una plataforma pensada para estudiantes universitarios que buscan optimizar su día a día.
-                Aquí podrás encontrar alojamientos cercanos al campus, información sobre subsidios y herramientas que 
-                facilitan tu vida académica y personal.
+                Simplificar la búsqueda de alojamiento ofreciendo espacios verificados, 
+                ubicaciones exactas en el mapa y herramientas de comunicación seguras.
             </p>
         </div>
 
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80" class="intro-img">
+        <div class="card">
+            <h2>🎯 Nuestra visión</h2>
+            <p>
+                Convertirnos en la plataforma líder de alojamiento estudiantil en Colombia,
+                llevando la tecnología al servicio de quienes inician un nuevo camino académico.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>💡 ¿Qué resolvemos?</h2>
+            <p>
+                Estudiantes llegan a nuevas ciudades sin saber cuáles zonas son seguras o cuánto deberían pagar.
+                StudyNest centraliza información real: fotos, precios, distancias, filtros avanzados y mapa interactivo.
+            </p>
+        </div>
+
+        <!-- TEAM -->
+        <div class="card">
+            <h2>👥 Nuestro equipo</h2>
+
+            <div class="team">
+
+                <div class="person">
+                    <img src="../multimedia/WhatsApp Image 2025-11-12 at 5.43.45 PM.jpeg">
+                    <h3>William Mauricio Ortega</h3>
+                    <p>Desarrollador Principal & Arquitecto del Proyecto</p>
+                </div>
+
+                <div class="person">
+                    <img src="../multimedia/Paula Foto.png">
+                    <h3>Integrante 2</h3>
+                    <p>Diseño UI/UX y Experiencia del Usuario</p>
+                </div>
+
+            </div>
+        </div>
+
     </section>
 
-    <!-- MISIÓN, VISIÓN, VALORES -->
-    <section class="about-info">
-        <div class="info-card">
-            <h3>Misión</h3>
-            <p>
-                Brindar una plataforma confiable que centralice alojamientos, oportunidades y recursos esenciales para
-                los estudiantes.
-            </p>
-        </div>
-
-        <div class="info-card">
-            <h3>Visión</h3>
-            <p>
-                Ser la plataforma estudiantil más completa de Colombia, apoyando a miles de estudiantes en su experiencia universitaria.
-            </p>
-        </div>
-
-        <div class="info-card">
-            <h3>Valores</h3>
-            <p>
-                Compromiso, transparencia, accesibilidad y dedicación hacia el bienestar estudiantil.
-            </p>
-        </div>
-    </section>
-
-    <div id="toast-container"></div>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <p>© 2025 StudyNest. Todos los derechos reservados.</p>
+    <footer>
+        StudyNest © 2025 — Todos los derechos reservados.
     </footer>
 
 </body>
